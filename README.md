@@ -53,10 +53,10 @@ python3 val2yolo.py  /path/to/original/widerface [/path/to/save/widerface/val]
 ## Preweight
 | Model            | Easy  | Medium | Hard  | PreWeight  |
 |------------------|-------|--------|-------|------------|
-| YOLO-Facev2n     | 0.936 | 0.921  | 0.812 | [yolo-facev2n.pt](https://github.com/Krasjet-Yu/YOLO-FaceV2/releases/download/v2.1.0/yolo-facev2m-preweight.pt) |
-| YOLO-FaceV2s     | 0.983 | 0.970  | 0.893 | [yolo-facev2s.pt](https://github.com/Krasjet-Yu/YOLO-FaceV2/releases/download/v2.1.0/yolo-facev2s-preweight.pt) |
-| YOLO-FaceV2m     | 0.984 | 0.973  | 0.905 | [yolo-facev2m.pt](https://github.com/Krasjet-Yu/YOLO-FaceV2/releases/download/v2.1.0/yolo-facev2m-preweight.pt) |
-| **YOLO-FaceV2l** | 0.986 | 0.979  | 0.919 | [yolo-facev2l.pt](https://github.com/Krasjet-Yu/YOLO-FaceV2/releases/download/v2.1.0/yolo-facev2l-preweight.pt) |
+| YOLO-Facev2n     | 0.936 | 0.921  | 0.812 | [yolo-facev2n.pt](https://github.com/Krasjet-Yu/YOLO-FaceV2/releases/download/v2.1/yolo-facev2n-preweight.pt) |
+| YOLO-FaceV2s     | 0.983 | 0.970  | 0.893 | [yolo-facev2s.pt](https://github.com/Krasjet-Yu/YOLO-FaceV2/releases/download/v2.1/yolo-facev2s-preweight.pt) |
+| YOLO-FaceV2m     | 0.984 | 0.973  | 0.905 | [yolo-facev2m.pt](https://github.com/Krasjet-Yu/YOLO-FaceV2/releases/download/v2.1/yolo-facev2m-preweight.pt) |
+| **YOLO-FaceV2l** | 0.986 | 0.979  | 0.919 | [yolo-facev2l.pt](https://github.com/Krasjet-Yu/YOLO-FaceV2/releases/download/v2.1/yolo-facev2l-preweight.pt) |
 
 
 #### Training
