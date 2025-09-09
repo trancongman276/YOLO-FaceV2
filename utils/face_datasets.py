@@ -145,9 +145,13 @@ class LoadFaceImagesAndLabels(Dataset):  # for training/testing
 
         # Check cache
         self.label_files = img2label_paths(self.img_files)  # labels
-        cache_path = Path(self.label_files[0]).parent.with_suffix('.cache')  # cached labels
+        # cache_path = Path(self.label_files[0]).parent.with_suffix('.cache')  # cached labels
+        cache_path = os.path.join(os.path.dirname(path), "train.cache").replace(
+            "/kaggle/input", "/kaggle/working"
+        )
+        cache_path = Path(cache_path)
         if cache_path.is_file():
-            cache = torch.load(cache_path)  # load
+            cache = torch.load(cache_path, weights_only=False)  # load
             if cache['hash'] != get_hash(self.label_files + self.img_files) or 'results' not in cache:  # changed
                 cache = self.cache_labels(cache_path)  # re-cache
         else:
@@ -305,7 +309,7 @@ class LoadFaceImagesAndLabels(Dataset):  # for training/testing
                 labels[:, 3] = ratio[0] * w * (x[:, 1] + x[:, 3] / 2) + pad[0]
                 labels[:, 4] = ratio[1] * h * (x[:, 2] + x[:, 4] / 2) + pad[1]
 
-                #labels[:, 5] = ratio[0] * w * x[:, 5] + pad[0]  # pad width
+                # labels[:, 5] = ratio[0] * w * x[:, 5] + pad[0]  # pad width
                 labels[:, 5] = np.array(x[:, 5] > 0, dtype=np.int32) * (ratio[0] * w * x[:, 5] + pad[0]) + (
                     np.array(x[:, 5] > 0, dtype=np.int32) - 1)
                 labels[:, 6] = np.array(x[:, 6] > 0, dtype=np.int32) * (ratio[1] * h * x[:, 6] + pad[1]) + (
@@ -380,7 +384,7 @@ class LoadFaceImagesAndLabels(Dataset):  # for training/testing
                     labels[:, 11] = np.where(labels[:, 11] < 0, -1, 1 - labels[:, 11])
                     labels[:, 13] = np.where(labels[:, 13] < 0, -1, 1 - labels[:, 13])
 
-                    #左右镜像的时候，左眼、右眼，　左嘴角、右嘴角无法区分, 应该交换位置，便于网络学习
+                    # 左右镜像的时候，左眼、右眼，　左嘴角、右嘴角无法区分, 应该交换位置，便于网络学习
                     eye_left = np.copy(labels[:, [5, 6]])
                     mouth_left = np.copy(labels[:, [11, 12]])
                     labels[:, [5, 6]] = labels[:, [7, 8]]
@@ -391,14 +395,14 @@ class LoadFaceImagesAndLabels(Dataset):  # for training/testing
         labels_out = torch.zeros((nL, 16))
         if nL:
             labels_out[:, 1:] = torch.from_numpy(labels)
-            #showlabels(img, labels[:, 1:5], labels[:, 5:15])
+            # showlabels(img, labels[:, 1:5], labels[:, 5:15])
 
         # Convert
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
         img = np.ascontiguousarray(img)
-        #print(index, '   --- labels_out: ', labels_out)
-        #if nL:
-            #print( ' : landmarks : ', torch.max(labels_out[:, 5:15]), '  ---   ', torch.min(labels_out[:, 5:15]))
+        # print(index, '   --- labels_out: ', labels_out)
+        # if nL:
+        # print( ' : landmarks : ', torch.max(labels_out[:, 5:15]), '  ---   ', torch.min(labels_out[:, 5:15]))
         return torch.from_numpy(img), labels_out, self.img_files[index], shapes
 
     @staticmethod
