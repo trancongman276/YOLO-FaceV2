@@ -150,6 +150,7 @@ class LoadFaceImagesAndLabels(Dataset):  # for training/testing
             "/kaggle/input", "/kaggle/working"
         )
         cache_path = Path(cache_path)
+        os.makedirs(cache_path.parent, exist_ok=True)  # make sure parent dir exists
         if cache_path.is_file():
             cache = torch.load(cache_path, weights_only=False)  # load
             if cache['hash'] != get_hash(self.label_files + self.img_files) or 'results' not in cache:  # changed
