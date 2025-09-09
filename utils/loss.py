@@ -213,7 +213,7 @@ class ComputeLoss:
                         lcls += self.BCEcls(ps[:, 15:], t, auto_iou)  # BCE
                     else:
                         lcls += self.BCEcls(ps[:, 15:], t)  # BCE
-                
+
                 # Landmarks Loss
                 plandmarks = ps[:,5:15]
 
@@ -273,7 +273,7 @@ class ComputeLoss:
 
         if self.autobalance:
             self.balance = [x / self.balance[self.ssi] for x in self.balance]
-            
+
         s = 3 / no  # output count scaling
         lbox *= self.hyp['box']
         lobj *= self.hyp['obj']
@@ -304,9 +304,9 @@ class ComputeLoss:
         for i in range(self.nl):
             anchors = self.anchors[i]
             gain[2:6] = torch.tensor(p[i].shape)[[3, 2, 3, 2]]  # xyxy gain
-            #landmarks 10
+            # landmarks 10
             gain[6:16] = torch.tensor(p[i].shape)[[3, 2, 3, 2, 3, 2, 3, 2, 3, 2]]  # xyxy gain
-           
+
             # Match targets to anchors
             t = targets * gain
             if nt:
@@ -338,18 +338,20 @@ class ComputeLoss:
             # Append
             # a = t[:, 6].long()  # anchor indices
             a = t[:, 16].long()  # anchor indices
-            indices.append((b, a, gj.clamp_(0, gain[3] - 1), gi.clamp_(0, gain[2] - 1)))  # image, anchor, grid indices
+            indices.append(
+                (b, a, gj.clamp(0, gain[3] - 1).long(), gi.clamp(0, gain[2] - 1).long())
+            )  # image, anchor, grid indices
             tbox.append(torch.cat((gxy - gij, gwh), 1))  # box
             anch.append(anchors[a])  # anchors
             tcls.append(c)  # class
 
-            #landmarks
+            # landmarks
             lks = t[:,6:16]
-            #lks_mask = lks > 0
-            #lks_mask = lks_mask.float()
+            # lks_mask = lks > 0
+            # lks_mask = lks_mask.float()
             lks_mask = torch.where(lks < 0, torch.full_like(lks, 0.), torch.full_like(lks, 1.0))
 
-            #应该是关键点的坐标除以anch的宽高才对，便于模型学习。使用gwh会导致不同关键点的编码不同，没有统一的参考标准
+            # 应该是关键点的坐标除以anch的宽高才对，便于模型学习。使用gwh会导致不同关键点的编码不同，没有统一的参考标准
 
             lks[:, [0, 1]] = (lks[:, [0, 1]] - gij)
             lks[:, [2, 3]] = (lks[:, [2, 3]] - gij)
@@ -392,6 +394,6 @@ class ComputeLoss:
             lks_mask_new = lks_mask
             lmks_mask.append(lks_mask_new)
             landmarks.append(lks)
-            #print('lks: ',  lks.size())`
+            # print('lks: ',  lks.size())`
 
         return tcls, tbox, indices, anch, landmarks, lmks_mask
